@@ -1,0 +1,497 @@
+in the [history] section of cqlshrc.
+See https://cassandra.apache.org/doc/latest/tools/cqlsh.html for more information.
+
+Connected to sensorring at 127.0.0.1:9042
+[cqlsh 6.2.0 | Cassandra 5.0.9 | CQL spec 3.4.7 | Native protocol v5]
+Use HELP for help.
+cqlsh> CREATE KEYSPACE ring1
+   ... WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+cqlsh> CREATE TABLE ring1.sensors (
+   ...     sensor_id text PRIMARY KEY
+   ... );
+cqlsh> exit;
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> foreach ($s in "hn-01","hn-02","hn-03","hn-04","hn-05","hn-06") {
+>>     Write-Host "$s ->"
+>>     docker compose exec -T cass1 nodetool getendpoints ring1 sensors $s
+>> }
+hn-01 ->
+172.20.0.2
+hn-02 ->
+172.20.0.4
+hn-03 ->
+172.20.0.3
+hn-04 ->
+172.20.0.2
+hn-05 ->
+172.20.0.3
+hn-06 ->
+172.20.0.3
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass1 nodetool status ring1
+Datacenter: datacenter1
+=======================
+Status=Up/Down
+|/ State=Normal/Leaving/Joining/Moving
+--  Address     Load        Tokens  Owns (effective)  Host ID                               Rack 
+UN  172.20.0.3  173.9 KiB   16      31.6%             37ae7c2e-8823-4dbe-b154-8522412bf55d  rack1
+UN  172.20.0.2  204.97 KiB  16      32.7%             1843f062-d53a-4cad-afe0-88dcedfbeac0  rack1
+UN  172.20.0.4  141.8 KiB   16      35.7%             3941068d-aed6-4617-8180-c05bd985a415  rack1
+
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass1 nodetool ring
+
+Datacenter: datacenter1
+==========
+Address          Rack        Status State   Load            Owns                Token                                       
+                                                                                8947937593363725315                         
+172.20.0.4       rack1       Up     Normal  174.14 KiB      ?                   -9133958725251051006                        
+172.20.0.3       rack1       Up     Normal  173.9 KiB       ?                   -8900342789389087474                        
+172.20.0.2       rack1       Up     Normal  204.97 KiB      ?                   -8520661027829712224                        
+172.20.0.4       rack1       Up     Normal  174.14 KiB      ?                   -8156067868857562340                        
+172.20.0.3       rack1       Up     Normal  173.9 KiB       ?                   -7866042142713683106                        
+172.20.0.3       rack1       Up     Normal  173.9 KiB       ?                   -7439755641432553716                        
+172.20.0.4       rack1       Up     Normal  174.14 KiB      ?                   -7008744160501885632                        
+172.20.0.2       rack1       Up     Normal  204.97 KiB      ?                   -6742026727006125095                        
+172.20.0.4       rack1       Up     Normal  174.14 KiB      ?                   -6341813411580944796                        
+172.20.0.3       rack1       Up     Normal  173.9 KiB       ?                   -6089553814857875832                        
+172.20.0.2       rack1       Up     Normal  204.97 KiB      ?                   -5645984826771186806                        
+172.20.0.4       rack1       Up     Normal  174.14 KiB      ?                   -5284256726890896237                        
+172.20.0.3       rack1       Up     Normal  173.9 KiB       ?                   -5032177297928917615                        
+172.20.0.2       rack1       Up     Normal  204.97 KiB      ?                   -4554687716078974546                        
+172.20.0.4       rack1       Up     Normal  174.14 KiB      ?                   -4041818412210764085                        
+172.20.0.2       rack1       Up     Normal  204.97 KiB      ?                   -3710311068587812790                        
+172.20.0.4       rack1       Up     Normal  174.14 KiB      ?                   -3214971955472650815                        
+172.20.0.3       rack1       Up     Normal  173.9 KiB       ?                   -2910482397926682506                        
+172.20.0.4       rack1       Up     Normal  174.14 KiB      ?                   -2550463253295392740                        
+172.20.0.2       rack1       Up     Normal  204.97 KiB      ?                   -2270042838685229550                        
+172.20.0.4       rack1       Up     Normal  174.14 KiB      ?                   -1888331746993151504                        
+172.20.0.3       rack1       Up     Normal  173.9 KiB       ?                   -1652061806783029472                        
+172.20.0.2       rack1       Up     Normal  204.97 KiB      ?                   -1198542222345196738                        
+172.20.0.4       rack1       Up     Normal  174.14 KiB      ?                   -825979347322799965                         
+172.20.0.3       rack1       Up     Normal  173.9 KiB       ?                   -587720817009966076                         
+172.20.0.2       rack1       Up     Normal  204.97 KiB      ?                   -180690817602769722                         
+172.20.0.4       rack1       Up     Normal  174.14 KiB      ?                   312147192067095025                          
+172.20.0.2       rack1       Up     Normal  204.97 KiB      ?                   636981115009581071                          
+172.20.0.3       rack1       Up     Normal  173.9 KiB       ?                   1232283483969980321                         
+172.20.0.2       rack1       Up     Normal  204.97 KiB      ?                   1712736996235160610                         
+172.20.0.4       rack1       Up     Normal  174.14 KiB      ?                   2144062921022177708                         
+172.20.0.2       rack1       Up     Normal  204.97 KiB      ?                   2448652688946054251                         
+172.20.0.4       rack1       Up     Normal  174.14 KiB      ?                   2858358385419838701                         
+172.20.0.3       rack1       Up     Normal  173.9 KiB       ?                   3109347813482966350                         
+172.20.0.2       rack1       Up     Normal  204.97 KiB      ?                   3528025496393655909                         
+172.20.0.4       rack1       Up     Normal  174.14 KiB      ?                   3975596836291536295                         
+172.20.0.3       rack1       Up     Normal  173.9 KiB       ?                   4278302736661980729                         
+172.20.0.2       rack1       Up     Normal  204.97 KiB      ?                   4771545502074247881                         
+172.20.0.3       rack1       Up     Normal  173.9 KiB       ?                   5327426536991171817                         
+172.20.0.2       rack1       Up     Normal  204.97 KiB      ?                   5738909745152783380                         
+172.20.0.3       rack1       Up     Normal  173.9 KiB       ?                   6263339709782687237                         
+172.20.0.3       rack1       Up     Normal  173.9 KiB       ?                   6678977369354327117                         
+172.20.0.4       rack1       Up     Normal  174.14 KiB      ?                   7047320560981102435                         
+172.20.0.2       rack1       Up     Normal  204.97 KiB      ?                   7328914297666682018                         
+172.20.0.3       rack1       Up     Normal  173.9 KiB       ?                   7890657716026308262                         
+172.20.0.3       rack1       Up     Normal  173.9 KiB       ?                   8287980568375021053                         
+172.20.0.4       rack1       Up     Normal  174.14 KiB      ?                   8679801524985366486                         
+172.20.0.2       rack1       Up     Normal  204.97 KiB      ?                   8947937593363725315                         
+
+  Warning: "nodetool ring" is used to output all the tokens of a node.
+  To view status related info of a node use "nodetool status" instead.
+
+
+  Note: Non-system keyspaces don't have the same replication settings, effective ownership information is meaningless
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass1 cqlsh -e "SELECT token('hn-02') FROM system.local LIMIT 1;"
+
+ system.token('hn-02')
+-----------------------
+   1779598930076072019
+
+(1 rows)
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass1 cqlsh
+
+ATTENTION: All commands will be saved to history file: /root/.cassandra/cqlsh_history
+This may include sensitive information such as passwords.
+To disable history, use --disable-history or set 'disabled = true' in the [history] section of cqlshrc.
+See https://cassandra.apache.org/doc/latest/tools/cqlsh.html for more information.
+
+Connected to sensorring at 127.0.0.1:9042
+[cqlsh 6.2.0 | Cassandra 5.0.9 | CQL spec 3.4.7 | Native protocol v5]
+Use HELP for help.
+cqlsh> SELECT * FROM iot.readings_by_sensor WHERE temperature > 31.5;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="Cannot execute this query as it might involve data filtering and thus may have unpredictable performance. If you want to execute this query despite the performance unpredictability, use ALLOW FILTERING"
+cqlsh> exit;
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec -T cass1 cqlsh -e "CONSISTENCY ONE; TRACING ON; SELECT ts, temperature FROM iot.readings_by_sensor WHERE sensor_id = 'hn-01' LIMIT 3;" | Select-String "Executing|live rows|Request complete"
+
+                                                        Executing single-partition query 
+on readings_by_sensor [ReadStage-1] | 2026-11-18 14:13:59.142000 | 172.20.0.4 |          
+ 4079 | 127.0.0.1
+                                                                        Read 3 live rows 
+and 0 tombstone cells [ReadStage-1] | 2026-11-18 14:13:59.145001 | 172.20.0.4 |          
+ 6924 | 127.0.0.1
+                                                                                         
+                   Request complete | 2026-11-18 14:13:59.149205 | 172.20.0.2 |          
+18205 | 127.0.0.1
+
+
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec -T cass1 cqlsh -e "CONSISTENCY ONE; TRACING ON; SELECT count(*) FROM iot.readings_by_sensor WHERE temperature > 31.5 ALLOW FILTERING;" | Select-String "range requests|Executing|live rows|Request complete"
+
+ Submitting range requests on 49 ranges with a concurrency of 1 (516.0 rows per range 
+expected) [Native-Transport-Requests-1] | 2026-11-18 14:14:05.962000 | 172.20.0.2 |      
+    15376 | 127.0.0.1
+                                                          Submitted 1 concurrent range 
+requests [Native-Transport-Requests-1] | 2026-11-18 14:14:05.966000 | 172.20.0.2 |       
+   19476 | 127.0.0.1
+                Executing seq scan across 1 sstables for (min(-9223372036854775808), 
+min(-9223372036854775808)] [ReadStage-2] | 2026-11-18 14:14:05.966001 | 172.20.0.2 |     
+     19761 | 127.0.0.1
+                                                                      Read 2262 live 
+rows and 0 tombstone cells [ReadStage-2] | 2026-11-18 14:14:06.007000 | 172.20.0.2 |     
+     60599 | 127.0.0.1
+ Submitting range requests on 14 ranges with a concurrency of 1 (516.0 rows per range 
+expected) [Native-Transport-Requests-1] | 2026-11-18 14:14:06.035001 | 172.20.0.2 |      
+    88742 | 127.0.0.1
+                                                          Submitted 1 concurrent range 
+requests [Native-Transport-Requests-1] | 2026-11-18 14:14:06.041000 | 172.20.0.2 |       
+   94126 | 127.0.0.1
+                                    Executing seq scan across 1 sstables for [hn-23, 
+min(-9223372036854775808)] [ReadStage-2] | 2026-11-18 14:14:06.045000 | 172.20.0.2 |     
+     98674 | 127.0.0.1
+                                                                       Read 738 live 
+rows and 0 tombstone cells [ReadStage-2] | 2026-11-18 14:14:06.067000 | 172.20.0.2 |     
+    117627 | 127.0.0.1
+                                                                                         
+                    Request complete | 2026-11-18 14:14:06.072076 | 172.20.0.2 |         
+125076 | 127.0.0.1
+
+
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec -T cass1 cqlsh -e "CONSISTENCY ONE; SELECT count(*) FROM iot.readings_by_sensor WHERE temperature > 31.5 ALLOW FILTERING;"
+Consistency level set to ONE.
+
+ count
+-------
+   136
+
+(1 rows)
+
+Warnings :
+Aggregation query used without partition key
+
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> python sensorring.py cl
+ONE     OK    (rows for cl-test: 1)
+QUORUM  OK    (rows for cl-test: 2)
+ALL     OK    (rows for cl-test: 3)
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose stop cass3
+[+] stop 1/1
+ ✔ Container sensorring-cass3-1 Stopped                                               3.5s
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass1 nodetool status
+Datacenter: datacenter1
+=======================
+Status=Up/Down
+|/ State=Normal/Leaving/Joining/Moving
+--  Address     Load        Tokens  Owns  Host ID                               Rack 
+UN  172.20.0.3  173.9 KiB   16      ?     37ae7c2e-8823-4dbe-b154-8522412bf55d  rack1
+UN  172.20.0.2  204.97 KiB  16      ?     1843f062-d53a-4cad-afe0-88dcedfbeac0  rack1
+DN  172.20.0.4  174.14 KiB  16      ?     3941068d-aed6-4617-8180-c05bd985a415  rack1
+
+Note: Non-system keyspaces don't have the same replication settings, effective ownership information is meaningless
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> python sensorring.py cl
+ONE     OK    (rows for cl-test: 4)
+QUORUM  OK    (rows for cl-test: 5)
+ALL     FAIL Unavailable: need 3 replicas, 2 alive
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose stop cass2
+[+] stop 1/1
+ ✔ Container sensorring-cass2-1 Stopped                                               4.0s
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass1 nodetool status
+Datacenter: datacenter1
+=======================
+Status=Up/Down
+|/ State=Normal/Leaving/Joining/Moving
+--  Address     Load        Tokens  Owns  Host ID                               Rack 
+DN  172.20.0.3  173.9 KiB   16      ?     37ae7c2e-8823-4dbe-b154-8522412bf55d  rack1
+UN  172.20.0.2  204.97 KiB  16      ?     1843f062-d53a-4cad-afe0-88dcedfbeac0  rack1
+DN  172.20.0.4  174.14 KiB  16      ?     3941068d-aed6-4617-8180-c05bd985a415  rack1
+
+Note: Non-system keyspaces don't have the same replication settings, effective ownership information is meaningless
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> python sensorring.py cl
+ONE     OK    (rows for cl-test: 6)
+QUORUM  FAIL Unavailable: need 2 replicas, 1 alive
+ALL     FAIL Unavailable: need 3 replicas, 1 alive
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose start cass2
+[+] start 2/2
+ ✔ Container sensorring-cass1-1 Healthy                                               0.5s
+ ✔ Container sensorring-cass2-1 Started                                               0.3s
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose ps
+NAME                 IMAGE         COMMAND                  SERVICE   CREATED       STATUS                            PORTS
+sensorring-cass1-1   cassandra:5   "docker-entrypoint.s…"   cass1     2 weeks ago   Up 37 minutes (healthy)           0.0.0.0:9042->9042/tcp, [::]:9042->9042/tcp
+sensorring-cass2-1   cassandra:5   "docker-entrypoint.s…"   cass2     2 weeks ago   Up 2 seconds (health: starting)   7000-7001/tcp, 7199/tcp, 9042/tcp, 9160/tcp
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass1 nodetool disablehandoff
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass2 nodetool disablehandoff
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass1 cqlsh -e "CONSISTENCY QUORUM; INSERT INTO iot.readings_by_sensor (sensor_id, ts, temperature, humidity) VALUES ('hn-99', '2026-11-01 09:00:00', 41.0, 30);"
+Consistency level set to QUORUM.
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose start cass3
+[+] start 3/3
+ ✔ Container sensorring-cass1-1 Healthy                                               0.5s
+ ✔ Container sensorring-cass2-1 Healthy                                               0.5s
+ ✔ Container sensorring-cass3-1 Started                                               0.3s
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose ps
+NAME                 IMAGE         COMMAND                  SERVICE   CREATED       STATUS                            PORTS
+sensorring-cass1-1   cassandra:5   "docker-entrypoint.s…"   cass1     2 weeks ago   Up 38 minutes (healthy)           0.0.0.0:9042->9042/tcp, [::]:9042->9042/tcp
+sensorring-cass2-1   cassandra:5   "docker-entrypoint.s…"   cass2     2 weeks ago   Up 28 seconds (healthy)           7000-7001/tcp, 7199/tcp, 9042/tcp, 9160/tcp
+sensorring-cass3-1   cassandra:5   "docker-entrypoint.s…"   cass3     2 weeks ago   Up 2 seconds (health: starting)   7000-7001/tcp, 7199/tcp, 9042/tcp, 9160/tcp
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose stop cass1 cass2
+[+] stop 2/2
+ ✔ Container sensorring-cass2-1 Stopped                                               3.5s
+ ✔ Container sensorring-cass1-1 Stopped                                               3.7s
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose ps
+NAME                 IMAGE         COMMAND                  SERVICE   CREATED       STATUS                             PORTS
+sensorring-cass1-1   cassandra:5   "docker-entrypoint.s…"   cass1     2 weeks ago   Up 56 seconds (healthy)            0.0.0.0:9042->9042/tcp, [::]:9042->9042/tcp
+sensorring-cass2-1   cassandra:5   "docker-entrypoint.s…"   cass2     2 weeks ago   Up 19 seconds (health: starting)   7000-7001/tcp, 7199/tcp, 9042/tcp, 9160/tcp
+sensorring-cass3-1   cassandra:5   "docker-entrypoint.s…"   cass3     2 weeks ago   Up About a minute (healthy)        7000-7001/tcp, 7199/tcp, 9042/tcp, 9160/tcp
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass3 cqlsh -e "CONSISTENCY ALL; SELECT * FROM iot.readings_by_sensor WHERE sensor_id = 'hn-99';"
+Consistency level set to ALL.
+
+ sensor_id | ts                              | humidity | temperature
+-----------+---------------------------------+----------+-------------
+     hn-99 | 2026-11-01 09:00:00.000000+0000 |       30 |          41
+
+(1 rows)
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass3 nodetool repair iot
+[2026-11-18 14:41:22,215] Starting repair command #1 (1f9893c0-e35e-11f1-8f08-7f70716ea32b), repairing keyspace iot with repair options (parallelism: parallel, primary range: false, incremental: true, job threads: 1, ColumnFamilies: [], dataCenters: [], hosts: [], previewKind: NONE, # of ranges: 48, pull repair: false, force repair: false, optimise streams: false, ignore unreplicated keyspaces: false, repairPaxos: true, paxosOnly: false)
+[2026-11-18 14:41:24,067] Repair session 1ff22570-e35e-11f1-8f08-7f70716ea32b for range [(-3214971955472650815,-2910482397926682506], (-9133958725251051006,-8900342789389087474], (4278302736661980729,4771545502074247881], (8287980568375021053,8679801524985366486], (-2270042838685229550,-1888331746993151504], (2144062921022177708,2448652688946054251], (-6341813411580944796,-6089553814857875832], (-1652061806783029472,-1198542222345196738], (-3710311068587812790,-3214971955472650815], (-5032177297928917615,-4554687716078974546], (-180690817602769722,312147192067095025], (636981115009581071,1232283483969980321], (-2910482397926682506,-2550463253295392740], (-825979347322799965,-587720817009966076], (-8900342789389087474,-8520661027829712224], (-2550463253295392740,-2270042838685229550], (1712736996235160610,2144062921022177708], (-1888331746993151504,-1652061806783029472], (-6089553814857875832,-5645984826771186806], (312147192067095025,636981115009581071], (4771545502074247881,5327426536991171817], (3109347813482966350,3528025496393655909], (-8520661027829712224,-8156067868857562340], (5738909745152783380,6263339709782687237], (2448652688946054251,2858358385419838701], (-8156067868857562340,-7866042142713683106], (-1198542222345196738,-825979347322799965], (-6742026727006125095,-6341813411580944796], (8947937593363725315,-9133958725251051006], (1232283483969980321,1712736996235160610], (3975596836291536295,4278302736661980729], (3528025496393655909,3975596836291536295], (7047320560981102435,7328914297666682018], (-4041818412210764085,-3710311068587812790], (6263339709782687237,6678977369354327117], (6678977369354327117,7047320560981102435], (7328914297666682018,7890657716026308262], (2858358385419838701,3109347813482966350], (-5645984826771186806,-5284256726890896237], (8679801524985366486,8947937593363725315], (-4554687716078974546,-4041818412210764085], (-5284256726890896237,-5032177297928917615], (7890657716026308262,8287980568375021053], (-7866042142713683106,-7439755641432553716], (-7008744160501885632,-6742026727006125095], (-587720817009966076,-180690817602769722], (-7439755641432553716,-7008744160501885632], (5327426536991171817,5738909745152783380]] finished (progress: 57%)
+[2026-11-18 14:41:24,379] Repair completed successfully
+[2026-11-18 14:41:24,383] Repair command #1 finished in 2 seconds
+[2026-11-18 14:41:24,402] condition satisfied queried for parent session status and discovered repair completed.
+[2026-11-18 14:41:24,402] Repair completed successfully
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass1 nodetool statushandoff
+Hinted handoff is running
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass2 nodetool statushandoff
+Hinted handoff is running
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose stop cass3
+[+] stop 1/1
+ ✔ Container sensorring-cass3-1 Stopped                                               3.3s
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass1 nodetool status
+Datacenter: datacenter1
+=======================
+Status=Up/Down
+|/ State=Normal/Leaving/Joining/Moving
+--  Address     Load        Tokens  Owns  Host ID                               Rack 
+UN  172.20.0.3  382.81 KiB  16      ?     37ae7c2e-8823-4dbe-b154-8522412bf55d  rack1
+UN  172.20.0.2  307.92 KiB  16      ?     1843f062-d53a-4cad-afe0-88dcedfbeac0  rack1
+DN  172.20.0.4  284.01 KiB  16      ?     3941068d-aed6-4617-8180-c05bd985a415  rack1
+
+Note: Non-system keyspaces don't have the same replication settings, effective ownership information is meaningless
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass1 nodetool disablehandoff
+>> 
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass2 nodetool disablehandoff
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass1 cqlsh -e "CONSISTENCY QUORUM; INSERT INTO iot.readings_by_sensor (sensor_id, ts, temperature, humidity) VALUES ('hn-98', '2026-11-01 09:00:00', 41.0, 30);"
+Consistency level set to QUORUM.
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose start cass3
+[+] start 3/3
+ ✔ Container sensorring-cass1-1 Healthy                                               0.5s
+ ✔ Container sensorring-cass2-1 Healthy                                               0.5s
+ ✔ Container sensorring-cass3-1 Started                                               0.2s
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose ps
+NAME                 IMAGE         COMMAND                  SERVICE   CREATED       STATUS                            PORTS
+sensorring-cass1-1   cassandra:5   "docker-entrypoint.s…"   cass1     2 weeks ago   Up 4 minutes (healthy)            0.0.0.0:9042->9042/tcp, [::]:9042->9042/tcp
+sensorring-cass2-1   cassandra:5   "docker-entrypoint.s…"   cass2     2 weeks ago   Up 3 minutes (healthy)            7000-7001/tcp, 7199/tcp, 9042/tcp, 9160/tcp
+sensorring-cass3-1   cassandra:5   "docker-entrypoint.s…"   cass3     2 weeks ago   Up 2 seconds (health: starting)   7000-7001/tcp, 7199/tcp, 9042/tcp, 9160/tcp
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose stop cass1 cass2
+[+] stop 2/2
+ ✔ Container sensorring-cass2-1 Stopped                                               3.5s
+ ✔ Container sensorring-cass1-1 Stopped                                               3.7s
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose ps -a
+NAME                 IMAGE         COMMAND                  SERVICE   CREATED       STATUS                             PORTS
+sensorring-cass1-1   cassandra:5   "docker-entrypoint.s…"   cass1     2 weeks ago   Exited (137) 2 seconds ago         
+sensorring-cass2-1   cassandra:5   "docker-entrypoint.s…"   cass2     2 weeks ago   Exited (137) 6 seconds ago         
+sensorring-cass3-1   cassandra:5   "docker-entrypoint.s…"   cass3     2 weeks ago   Up 18 seconds (health: starting)   7000-7001/tcp, 7199/tcp, 9042/tcp, 9160/tcp
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass3 cqlsh -e "CONSISTENCY ONE; SELECT * FROM iot.readings_by_sensor WHERE sensor_id = 'hn-98';"
+Connection error: ('Unable to connect to any servers', {'127.0.0.1:9042': ConnectionRefusedError(111, "Tried connecting to [('127.0.0.1', 9042)]. Last error: Connection refused")})
+
+What's next:
+    Debug this Compose error with Gordon → docker ai "help me fix this compose error"
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose start cass1 cass2
+[+] start 2/2
+ ✔ Container sensorring-cass1-1 Healthy                                              30.8s
+ ✔ Container sensorring-cass2-1 Started                                               0.3s
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass3 cqlsh -e "CONSISTENCY ALL; SELECT * FROM iot.readings_by_sensor WHERE sensor_id = 'hn-98';"
+Consistency level set to ALL.
+
+ sensor_id | ts                              | humidity | temperature
+-----------+---------------------------------+----------+-------------
+     hn-98 | 2026-11-01 09:00:00.000000+0000 |       30 |          41
+
+(1 rows)
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass3 nodetool repair iot
+[2026-11-18 14:45:50,072] Starting repair command #1 (bf418850-e35e-11f1-ab63-595dbaa88c9d), repairing keyspace iot with repair options (parallelism: parallel, primary range: false, incremental: true, job threads: 1, ColumnFamilies: [], dataCenters: [], hosts: [], previewKind: NONE, # of ranges: 48, pull repair: false, force repair: false, optimise streams: false, ignore unreplicated keyspaces: false, repairPaxos: true, paxosOnly: false)
+[2026-11-18 14:45:51,337] Repair session bfa29410-e35e-11f1-ab63-595dbaa88c9d for range [(-3214971955472650815,-2910482397926682506], (-9133958725251051006,-8900342789389087474], (4278302736661980729,4771545502074247881], (8287980568375021053,8679801524985366486], (-2270042838685229550,-1888331746993151504], (2144062921022177708,2448652688946054251], (-6341813411580944796,-6089553814857875832], (-1652061806783029472,-1198542222345196738], (-3710311068587812790,-3214971955472650815], (-5032177297928917615,-4554687716078974546], (-180690817602769722,312147192067095025], (636981115009581071,1232283483969980321], (-2910482397926682506,-2550463253295392740], (-825979347322799965,-587720817009966076], (-8900342789389087474,-8520661027829712224], (-2550463253295392740,-2270042838685229550], (1712736996235160610,2144062921022177708], (-1888331746993151504,-1652061806783029472], (-6089553814857875832,-5645984826771186806], (312147192067095025,636981115009581071], (4771545502074247881,5327426536991171817], (3109347813482966350,3528025496393655909], (-8520661027829712224,-8156067868857562340], (5738909745152783380,6263339709782687237], (2448652688946054251,2858358385419838701], (-8156067868857562340,-7866042142713683106], (-1198542222345196738,-825979347322799965], (-6742026727006125095,-6341813411580944796], (8947937593363725315,-9133958725251051006], (1232283483969980321,1712736996235160610], (3975596836291536295,4278302736661980729], (3528025496393655909,3975596836291536295], (7047320560981102435,7328914297666682018], (-4041818412210764085,-3710311068587812790], (6263339709782687237,6678977369354327117], (6678977369354327117,7047320560981102435], (7328914297666682018,7890657716026308262], (2858358385419838701,3109347813482966350], (-5645984826771186806,-5284256726890896237], (8679801524985366486,8947937593363725315], (-4554687716078974546,-4041818412210764085], (-5284256726890896237,-5032177297928917615], (7890657716026308262,8287980568375021053], (-7866042142713683106,-7439755641432553716], (-7008744160501885632,-6742026727006125095], (-587720817009966076,-180690817602769722], (-7439755641432553716,-7008744160501885632], (5327426536991171817,5738909745152783380]] finished (progress: 57%)
+[2026-11-18 14:45:51,659] Repair completed successfully
+[2026-11-18 14:45:51,662] Repair command #1 finished in 1 second
+[2026-11-18 14:45:51,680] condition satisfied queried for parent session status and discovered repair completed.
+[2026-11-18 14:45:51,681] Repair completed successfully
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose stop cass3
+>> 
+[+] stop 1/1
+ ✔ Container sensorring-cass3-1 Stopped                                               3.3s
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass1 nodetool disablehandoff
+>> 
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass2 nodetool disablehandoff
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass1 cqlsh -e "CONSISTENCY QUORUM; INSERT INTO iot.readings_by_sensor (sensor_id, ts, temperature, humidity) VALUES ('hn-97', '2026-11-01 09:00:00', 41.0, 30);"
+Consistency level set to QUORUM.
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose start cass3
+>> 
+[+] start 3/3
+ ✔ Container sensorring-cass1-1 Healthy                                               0.5s
+ ✔ Container sensorring-cass2-1 Healthy                                               0.5s
+ ✔ Container sensorring-cass3-1 Started                                               0.3s
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose ps
+NAME                 IMAGE         COMMAND                  SERVICE   CREATED       STATUS                            PORTS
+sensorring-cass1-1   cassandra:5   "docker-entrypoint.s…"   cass1     2 weeks ago   Up 3 minutes (healthy)            0.0.0.0:9042->9042/tcp, [::]:9042->9042/tcp
+sensorring-cass2-1   cassandra:5   "docker-entrypoint.s…"   cass2     2 weeks ago   Up 2 minutes (healthy)            7000-7001/tcp, 7199/tcp, 9042/tcp, 9160/tcp
+sensorring-cass3-1   cassandra:5   "docker-entrypoint.s…"   cass3     2 weeks ago   Up 3 seconds (health: starting)   7000-7001/tcp, 7199/tcp, 9042/tcp, 9160/tcp
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose stop cass1 cass2
+>> 
+[+] stop 2/2
+ ✔ Container sensorring-cass2-1 Stopped                                               3.5s
+ ✔ Container sensorring-cass1-1 Stopped                                               3.6s
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose ps -a
+NAME                 IMAGE         COMMAND                  SERVICE   CREATED       STATUS                             PORTS
+sensorring-cass1-1   cassandra:5   "docker-entrypoint.s…"   cass1     2 weeks ago   Exited (137) 2 seconds ago         
+sensorring-cass2-1   cassandra:5   "docker-entrypoint.s…"   cass2     2 weeks ago   Exited (137) 5 seconds ago         
+sensorring-cass3-1   cassandra:5   "docker-entrypoint.s…"   cass3     2 weeks ago   Up 16 seconds (health: starting)   7000-7001/tcp, 7199/tcp, 9042/tcp, 9160/tcp
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker exec sensorring-cass3-1 cqlsh -e "CONSISTENCY ONE; SELECT * FROM iot.readings_by_sensor WHERE sensor_id = 'hn-97';"
+Connection error: ('Unable to connect to any servers', {'127.0.0.1:9042': ConnectionRefusedError(111, "Tried connecting to [('127.0.0.1', 9042)]. Last error: Connection refused")})
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose ps -a
+NAME                 IMAGE         COMMAND                  SERVICE   CREATED       STATUS                            PORTS
+sensorring-cass1-1   cassandra:5   "docker-entrypoint.s…"   cass1     2 weeks ago   Exited (137) About a minute ago   
+sensorring-cass2-1   cassandra:5   "docker-entrypoint.s…"   cass2     2 weeks ago   Exited (137) About a minute ago   
+sensorring-cass3-1   cassandra:5   "docker-entrypoint.s…"   cass3     2 weeks ago   Up About a minute (healthy)       7000-7001/tcp, 7199/tcp, 9042/tcp, 9160/tcp
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker exec sensorring-cass3-1 nodetool status
+Datacenter: datacenter1
+=======================
+Status=Up/Down
+|/ State=Normal/Leaving/Joining/Moving
+--  Address     Load        Tokens  Owns  Host ID                               Rack 
+DN  172.20.0.3  ?           16      ?     37ae7c2e-8823-4dbe-b154-8522412bf55d  rack1
+DN  172.20.0.2  ?           16      ?     1843f062-d53a-4cad-afe0-88dcedfbeac0  rack1
+UN  172.20.0.4  346.98 KiB  16      ?     3941068d-aed6-4617-8180-c05bd985a415  rack1
+
+Note: Non-system keyspaces don't have the same replication settings, effective ownership information is meaningless
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker logs --tail 50 sensorring-cass3-1
+        at io.netty.util.concurrent.ScheduledFutureTask.run(ScheduledFutureTask.java:160)
+        at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:173)
+        at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:166)
+        at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:472)
+        at io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:408)
+        at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:998)
+        at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+        at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+        at java.base/java.lang.Thread.run(Unknown Source)
+WARN  [OptionalTasks:1] 2026-11-18T14:49:12,767 CassandraRoleManager.java:459 - CassandraRoleManager skipped default role setup: some nodes were not ready
+INFO  [OptionalTasks:1] 2026-11-18T14:49:12,767 CassandraRoleManager.java:501 - Setup task failed with error, rescheduling
+WARN  [OptionalTasks:1] 2026-11-18T14:49:22,766 CassandraRoleManager.java:459 - CassandraRoleManager skipped default role setup: some nodes were not ready
+INFO  [OptionalTasks:1] 2026-11-18T14:49:22,767 CassandraRoleManager.java:501 - Setup task failed with error, rescheduling
+WARN  [OptionalTasks:1] 2026-11-18T14:49:32,769 CassandraRoleManager.java:459 - CassandraRoleManager skipped default role setup: some nodes were not ready
+INFO  [OptionalTasks:1] 2026-11-18T14:49:32,770 CassandraRoleManager.java:501 - Setup task failed with error, rescheduling
+INFO  [Messaging-EventLoop-3-3] 2026-11-18T14:49:38,912 NoSpamLogger.java:104 - /172.20.0.4:7000->cass1/172.20.0.2:7000-URGENT_MESSAGES-[no-channel] failed to connect
+io.netty.channel.ConnectTimeoutException: connection timed out after 2000 ms: cass1/172.20.0.2:7000
+        at io.netty.channel.epoll.AbstractEpollChannel$AbstractEpollUnsafe$2.run(AbstractEpollChannel.java:615)
+        at io.netty.util.concurrent.PromiseTask.runTask(PromiseTask.java:98)
+        at io.netty.util.concurrent.ScheduledFutureTask.run(ScheduledFutureTask.java:160)
+        at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:173)
+        at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:166)
+        at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:472)
+        at io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:408)
+        at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:998)
+        at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+        at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+        at java.base/java.lang.Thread.run(Unknown Source)
+WARN  [OptionalTasks:1] 2026-11-18T14:49:42,771 CassandraRoleManager.java:459 - CassandraRoleManager skipped default role setup: some nodes were not ready
+INFO  [OptionalTasks:1] 2026-11-18T14:49:42,771 CassandraRoleManager.java:501 - Setup task failed with error, rescheduling
+INFO  [OptionalTasks:1] 2026-11-18T14:49:52,772 NoSpamLogger.java:104 - UnavailableException "Cannot achieve consistency level ONE" while executing SELECT * FROM system_auth.roles WHERE role = 'cassandra' ALLOW FILTERING
+WARN  [OptionalTasks:1] 2026-11-18T14:49:52,772 CassandraRoleManager.java:459 - CassandraRoleManager skipped default role setup: some nodes were not ready
+INFO  [OptionalTasks:1] 2026-11-18T14:49:52,773 CassandraRoleManager.java:501 - Setup task failed with error, rescheduling
+WARN  [OptionalTasks:1] 2026-11-18T14:50:02,774 CassandraRoleManager.java:459 - CassandraRoleManager skipped default role setup: some nodes were not ready
+INFO  [OptionalTasks:1] 2026-11-18T14:50:02,774 CassandraRoleManager.java:501 - Setup task failed with error, rescheduling
+INFO  [Messaging-EventLoop-3-3] 2026-11-18T14:50:11,423 NoSpamLogger.java:104 - /172.20.0.4:7000->cass1/172.20.0.2:7000-URGENT_MESSAGES-[no-channel] failed to connect
+io.netty.channel.ConnectTimeoutException: connection timed out after 2000 ms: cass1/172.20.0.2:7000
+        at io.netty.channel.epoll.AbstractEpollChannel$AbstractEpollUnsafe$2.run(AbstractEpollChannel.java:615)
+        at io.netty.util.concurrent.PromiseTask.runTask(PromiseTask.java:98)
+        at io.netty.util.concurrent.ScheduledFutureTask.run(ScheduledFutureTask.java:160)
+        at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:173)
+        at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:166)
+        at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:472)
+        at io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:408)
+        at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:998)
+        at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+        at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+        at java.base/java.lang.Thread.run(Unknown Source)
+WARN  [OptionalTasks:1] 2026-11-18T14:50:12,776 CassandraRoleManager.java:459 - CassandraRoleManager skipped default role setup: some nodes were not ready
+INFO  [OptionalTasks:1] 2026-11-18T14:50:12,776 CassandraRoleManager.java:501 - Setup task failed with error, rescheduling
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker exec sensorring-cass3-1 cqlsh -e "CONSISTENCY ONE; SELECT * FROM iot.readings_by_sensor WHERE sensor_id = 'hn-97';"
+Consistency level set to ONE.
+
+ sensor_id | ts | humidity | temperature
+-----------+----+----------+-------------
+
+
+(0 rows)
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose start cass1 cass2
+[+] start 2/2
+ ✔ Container sensorring-cass1-1 Healthy                                              30.8s
+ ✔ Container sensorring-cass2-1 Started                                               0.4s
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose ps
+NAME                 IMAGE         COMMAND                  SERVICE   CREATED       STATUS                            PORTS
+sensorring-cass1-1   cassandra:5   "docker-entrypoint.s…"   cass1     2 weeks ago   Up 38 seconds (healthy)           0.0.0.0:9042->9042/tcp, [::]:9042->9042/tcp
+sensorring-cass2-1   cassandra:5   "docker-entrypoint.s…"   cass2     2 weeks ago   Up 7 seconds (health: starting)   7000-7001/tcp, 7199/tcp, 9042/tcp, 9160/tcp
+sensorring-cass3-1   cassandra:5   "docker-entrypoint.s…"   cass3     2 weeks ago   Up 3 minutes (healthy)            7000-7001/tcp, 7199/tcp, 9042/tcp, 9160/tcp
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass3 cqlsh -e "CONSISTENCY ALL; SELECT * FROM iot.readings_by_sensor WHERE sensor_id = 'hn-97';"
+Consistency level set to ALL.
+<stdin>:1:NoHostAvailable: ('Unable to complete the operation against any hosts', {<Host: 127.0.0.1:9042 datacenter1>: Unavailable('Error from server: code=1000 [Unavailable exception] message="Cannot achieve consistency level ALL" info={\'consistency\': \'ALL\', \'required_replicas\': 3, \'alive_replicas\': 2}')})
+
+What's next:
+    Debug this Compose error with Gordon → docker ai "help me fix this compose error"
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose exec cass3 nodetool repair iot
+[2026-11-18 14:52:00,074] Starting repair command #1 (9bc73cc0-e35f-11f1-b547-1d60ec60799d), repairing keyspace iot with repair options (parallelism: parallel, primary range: false, incremental: true, job threads: 1, ColumnFamilies: [], dataCenters: [], hosts: [], previewKind: NONE, # of ranges: 48, pull repair: false, force repair: false, optimise streams: false, ignore unreplicated keyspaces: false, repairPaxos: true, paxosOnly: false)
+[2026-11-18 14:52:01,977] Repair session 9c358ef0-e35f-11f1-b547-1d60ec60799d for range [(-3214971955472650815,-2910482397926682506], (-9133958725251051006,-8900342789389087474], (4278302736661980729,4771545502074247881], (8287980568375021053,8679801524985366486], (-2270042838685229550,-1888331746993151504], (2144062921022177708,2448652688946054251], (-6341813411580944796,-6089553814857875832], (-1652061806783029472,-1198542222345196738], (-3710311068587812790,-3214971955472650815], (-5032177297928917615,-4554687716078974546], (-180690817602769722,312147192067095025], (636981115009581071,1232283483969980321], (-2910482397926682506,-2550463253295392740], (-825979347322799965,-587720817009966076], (-8900342789389087474,-8520661027829712224], (-2550463253295392740,-2270042838685229550], (1712736996235160610,2144062921022177708], (-1888331746993151504,-1652061806783029472], (-6089553814857875832,-5645984826771186806], (312147192067095025,636981115009581071], (4771545502074247881,5327426536991171817], (3109347813482966350,3528025496393655909], (-8520661027829712224,-8156067868857562340], (5738909745152783380,6263339709782687237], (2448652688946054251,2858358385419838701], (-8156067868857562340,-7866042142713683106], (-1198542222345196738,-825979347322799965], (-6742026727006125095,-6341813411580944796], (8947937593363725315,-9133958725251051006], (1232283483969980321,1712736996235160610], (3975596836291536295,4278302736661980729], (3528025496393655909,3975596836291536295], (7047320560981102435,7328914297666682018], (-4041818412210764085,-3710311068587812790], (6263339709782687237,6678977369354327117], (6678977369354327117,7047320560981102435], (7328914297666682018,7890657716026308262], (2858358385419838701,3109347813482966350], (-5645984826771186806,-5284256726890896237], (8679801524985366486,8947937593363725315], (-4554687716078974546,-4041818412210764085], (-5284256726890896237,-5032177297928917615], (7890657716026308262,8287980568375021053], (-7866042142713683106,-7439755641432553716], (-7008744160501885632,-6742026727006125095], (-587720817009966076,-180690817602769722], (-7439755641432553716,-7008744160501885632], (5327426536991171817,5738909745152783380]] finished (progress: 57%)
+[2026-11-18 14:52:02,220] Repair completed successfully
+[2026-11-18 14:52:02,221] Repair command #1 finished in 2 seconds
+[2026-11-18 14:52:02,244] condition satisfied queried for parent session status and discovered repair completed.
+[2026-11-18 14:52:02,245] Repair completed successfully
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> docker compose down -v
+[+] down 4/4
+ ✔ Container sensorring-cass3-1 Removed                                               3.5s
+ ✔ Container sensorring-cass2-1 Removed                                               3.5s
+ ✔ Container sensorring-cass1-1 Removed                                               3.7s
+ ✔ Network sensorring_default   Removed                                               0.2s
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm\Chapter3-WideColumnDatabases\sensorring> cd ..\..
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm> git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        Chapter 1 Document Databases.pdf
+        Chapter 2 Key-Value Stores.pdf
+        Chapter 3 Wide-Column Databases.pdf
+        Chapter2-KeyValueStores/AdvancedDatabases-NoSQL-VectorDatabases/
+        Chapter3-WideColumnDatabases/
+
+nothing added to commit but untracked files present (use "git add" to track)
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm> git add Chapter3-WideColumnDatabases/sensorring/docker-compose.yml
+>> git add Chapter3-WideColumnDatabases/sensorring/sensorring.py
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm> git diff --cached --name-only
+
+Chapter3-WideColumnDatabases/sensorring/docker-compose.yml
+Chapter3-WideColumnDatabases/sensorring/sensorring.py
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm> git commit -m "Chapter 3"
+>> 
+[main b4d63d0] Chapter 3
+ 2 files changed, 128 insertions(+)
+ create mode 100644 Chapter3-WideColumnDatabases/sensorring/docker-compose.yml
+ create mode 100644 Chapter3-WideColumnDatabases/sensorring/sensorring.py
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm> git push origin main
+Enumerating objects: 7, done.
+Counting objects: 100% (7/7), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (5/5), done.
+Writing objects: 100% (6/6), 1.88 KiB | 1.88 MiB/s, done.
+Total 6 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+To https://github.com/vuonghaiahn/AdvancedDatabases-NoSQL-VectorDatabases.git
+   69e539c..b4d63d0  main -> main
+(.venv) PS C:\Users\ADMIN\Documents\CSDL nang cao\cộng điểm> 
